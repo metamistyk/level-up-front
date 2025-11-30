@@ -1,0 +1,258 @@
+/* === Variables de colores para mantener consistencia === */
+:root {
+  --blue-electric: #00bfff;
+  --blue-dark: #005f99;
+  --black-bg: #000;
+  --dark-bg: #111;
+  --text-light: #f0f0f0;
+  --text-muted: #666;
+  --error-color: #b30000;
+  --ok-color: #0a7a0a;
+}
+
+/* === Estilo base para todo el cuerpo de la página === */
+body {
+  font-family: Arial, sans-serif;   /* Tipografía base */
+  margin: 0;
+  padding: 0;
+  background-color: var(--black-bg); /* Fondo negro para tema gamer */
+  color: var(--text-light);          /* Texto claro para buen contraste */
+  min-height: 100vh;                 /* Para que siempre tome altura completa */
+}
+
+/* === Contenedor general para aplicar tema oscuro === */
+.dark-page {
+  background-color: var(--black-bg);
+  color: var(--text-light);
+  min-height: 100vh;
+  padding: 1rem;                    /* Espacio interno general */
+}
+
+/* === Estilo para el navbar (usa Bootstrap pero puedes ajustar aquí) === */
+nav.navbar {
+  padding: 0.75rem 1rem;
+  background-color: var(--dark-bg); /* Fondo oscuro para navbar */
+  color: var(--text-light);
+}
+
+/* === Links activos y navegación === */
+.nav-link {
+  color: var(--text-light);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--blue-electric);
+}
+
+.nav-link.active {
+  font-weight: bold;
+  text-decoration: underline;
+  color: var(--blue-electric);
+}
+
+/* === Botones personalizados azul eléctrico === */
+.btn-electric {
+  background-color: var(--black-bg) !important;    /* Fondo negro puro */
+  color: var(--blue-electric) !important;           /* Texto azul eléctrico */
+  font-weight: bold !important;
+  border: 2px solid var(--blue-electric) !important;
+  transition: all 0.3s ease-in-out !important;      /* Transición suave */
+}
+
+.btn-electric:hover {
+  background-color: var(--blue-dark) !important;    /* Azul más oscuro al pasar mouse */
+  color: #e0e0e0 !important;                         /* Texto gris claro */
+  box-shadow: none !important;                       /* Sin sombra */
+  transform: none !important;                        /* Sin zoom */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilo del footer con tema gamer */
+.footer-container {
+  background-color: var(--black-bg); /* Fondo negro */
+  color: var(--blue-electric);       /* Texto azul eléctrico */
+  border-top: 2px solid var(--blue-electric); /* Línea superior para separar */
+  text-align: center;
+  padding: 1.5rem 1rem;              /* Espaciado vertical y horizontal */
+}
+
+.footer-legal {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* === Contenedor del Hero para evitar estilos inline === */
+.hero-container {
+  background-color: rgba(0, 191, 255, 0.34); /* Azul eléctrico translúcido */
+  padding: 2rem;
+  border-radius: 8px;
+  color: var(--text-light);
+  margin-bottom: 2rem;  /* Espacio inferior */
+}
+
+/* === Cartas en Hero, efecto hover para dinamismo === */
+.hero-container .card:hover {
+  background-color: rgba(0, 191, 255, 0.1);  /* Azul translúcido al hover */
+  color: var(--blue-electric);
+  transform: scale(1.03);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 191, 255, 0.5);
+  cursor: pointer;
+}
+
+.hero-container .card:hover .card-title,
+.hero-container .card:hover .card-text {
+  color: var(--blue-electric);
+}
+
+/* === Inputs y Textareas base === */
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--blue-electric);
+  border-radius: 4px;
+  background-color: var(--black-bg);
+  color: var(--text-light);
+}
+
+/* === Campos de formulario con espacio entre ellos === */
+.field {
+  margin-bottom: 16px;
+}
+
+/* === Mensajes de error y OK con colores y tamaño definidos === */
+.error {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.ok {
+  color: var(--ok-color);
+  font-size: 0.95rem;
+}
+
+/* === Clase para destacar elementos activos, como enlaces === */
+.active {
+  font-weight: bold;
+  text-decoration: underline;
+  color: var(--blue-electric);
+}
+
+/* === Estilos para el listado de productos === */
+.products-container {
+  padding: 1rem 0;
+}
+
+.product-card {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(0,0,0,0.6);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  background-color: rgba(0, 191, 255, 0.1);
+  box-shadow: 0 0 15px var(--blue-electric);
+  transform: scale(1.03);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+.custom-card-body {
+  background-color: #111; /* Fondo oscuro para detalles */
+  color: var(--text-light); /* Texto claro para buena lectura */
+  padding: 1rem;
+  border-top: 1px solid rgba(0, 191, 255, 0.2);
+  border-radius: 0 0 8px 8px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.custom-card-body .card-text {
+  color: var(--text-light); /* Sobrescribe text-muted para mejor legibilidad */
+  flex-grow: 1;
+  margin-bottom: 0.75rem;
+}
+
+.custom-card-body .card-title {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--blue-electric);
+}
+
+.custom-card-body .card-text.fw-bold {
+  color: var(--blue-electric);
+  font-size: 1.1rem;
+  margin-top: auto;
+  font-weight: bold;
+}
+
+/* Al hacer hover en toda la card, cambiar fondo solo del card body para efecto sutil */
+.product-card:hover .custom-card-body {
+  background-color: rgba(0, 191, 255, 0.07);
+}
+
+.titulos{
+  color: var(--blue-electric);
+  text-align: center;
+  font-size: 25px;
+}
+
+/* Fondo con imagen */
+.fondo-completo {
+  background-image: url("../../public/assets/fondo.jpg"); /* Ruta ajustada */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* opcional, si quieres que quede fijo al hacer scroll */
+  min-height: 100vh; /* para que ocupe toda la altura de la ventana */
+  width: 100%;
+}
+
+.page-content {
+  min-height: 80vh; /* deja espacio para el footer */
+  padding-bottom: 100px; /* ajusta según el alto de tu footer */
+}
+
+.content-center{  
+    max-width: 700px;
+    padding: 0;
+    height: 200px;
+    justify-content: 'center';
+    align-items: center;        
+}
+.container-centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    text-align: center;
+}
+
+.consola-img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain; /* Mostrar imagen completa sin recortes */
+  background-color: #111; /* Fondo oscuro para rellenar el espacio vacío */
+  padding: 5px;
+  border: 1px solid var(--blue-electric);
+  border-radius: 8px;
+  display: block;
+}
