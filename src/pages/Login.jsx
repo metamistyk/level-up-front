@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
@@ -14,30 +16,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!values.email.trim() || !values.password.trim()) {
-      setErrors({ email: "Credenciales inválidas" });
-      return;
-    }
+    const { email, password } = values;
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+      const loggedUser = await login(email, password);
 
-      if (!response.ok) throw new Error();
+      // login devuelve user → verificar si existe ID
+      if (!loggedUser || !loggedUser.id) {
+        alert("Error: el backend no está enviando ID del usuario.");
+        return;
+      }
 
-      const data = await response.json();
-      login(data); // guardar en EL CONTEXTO
-
-      window.location.href = "/"; // redirigir a home
-
-    } catch (err) {
-      setErrors({
-        email: "Email o contraseña incorrectos",
-        password: " ",
-      });
+      navigate("/");
+    } catch (error) {
+      alert("Credenciales incorrectas");
     }
   };
 

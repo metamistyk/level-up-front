@@ -1,89 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+  const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    username: "",
+    email: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
 
-  const onChange = (e) => {
-    setValues(v => ({ ...v, [e.target.name]: e.target.value }));
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const validate = () => {
-    const errs = {};
+    let newErrors = {};
 
-    if (!values.name.trim()) errs.name = "El nombre es obligatorio";
-    if (!values.email.trim()) errs.email = "El correo es obligatorio";
+    if (!values.username.trim()) {
+      newErrors.username = "El nombre es obligatorio";
+    }
+
+    if (!values.email.trim()) {
+      newErrors.email = "El correo es obligatorio";
+    }
 
     if (!values.password.trim()) {
-      errs.password = "La contraseña es obligatoria";
-    } else if (values.password.length < 4) {
-      errs.password = "Debe tener al menos 4 caracteres";
+      newErrors.password = "La contraseña es obligatoria";
     }
 
-    if (values.confirmPassword !== values.password) {
-      errs.confirmPassword = "Las contraseñas no coinciden";
-    }
-
-    return errs;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validation = validate();
-    if (Object.keys(validation).length > 0) {
-      setErrors(validation);
-      return;
-    }
+    if (!validate()) return;
 
     try {
       const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: values.name,
-          email: values.email,
-          password: values.password
-        })
+        body: JSON.stringify(values),
       });
 
       if (!response.ok) {
-        // Leemos el texto que viene del backend (incluye nuestra RuntimeException)
-        const text = await response.text();
-
-        if (text.includes("El correo ya está registrado")) {
-          setErrors({ email: "El correo ya está registrado" });
-        } else {
-          setErrors({ email: "No se pudo registrar el usuario" });
-        }
-
-        setSuccess(false);
-        return;
+        throw new Error("Error en el registro");
       }
 
-      const data = await response.json();
-      localStorage.setItem("user", JSON.stringify(data));
-      setSuccess(true);
-      setErrors({});
+      alert("Usuario registrado exitosamente");
 
-      setValues({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      });
-
+      // Redirigir a login
+      navigate("/login");
     } catch (error) {
-      setErrors({ email: "Error de conexión con el servidor" });
-      setSuccess(false);
+      alert("No se pudo registrar el usuario");
     }
   };
 
@@ -92,115 +65,71 @@ export default function SignUp() {
       className="d-flex justify-content-center align-items-center"
       style={{ minHeight: "90vh", backgroundColor: "var(--black-bg)" }}
     >
-      <div
+      <form
+        onSubmit={handleSubmit}
         className="p-4 shadow-lg"
         style={{
-          width: "420px",
+          width: "380px",
           backgroundColor: "var(--dark-bg)",
           border: "2px solid var(--blue-electric)",
           borderRadius: "12px",
           color: "var(--text-light)",
-          boxShadow: "0 0 20px #00bfff55",
         }}
       >
         <h2
           className="text-center mb-4"
           style={{ color: "var(--blue-electric)", fontWeight: "bold" }}
         >
-          Registrarse
+          Crear Cuenta
         </h2>
 
-        {success && (
-          <div className="alert alert-success text-center">
-            Registro exitoso. ¡Bienvenido!
-          </div>
-        )}
+        {/* NOMBRE */}
+        <div className="mb-3">
+          <label>Nombre</label>
+          <input
+            type="text"
+            name="username"
+            value={values.username}
+            onChange={handleChange}
+            className="form-control"
+            style={{ backgroundColor: "#000", color: "#fff" }}
+          />
+          {errors.username && <p className="error">{errors.username}</p>}
+        </div>
 
-        <form onSubmit={handleSubmit} noValidate>
+        {/* EMAIL */}
+        <div className="mb-3">
+          <label>Correo electrónico</label>
+          <input
+            type="email"
+            name="email"
+            value={values.email}
+            onChange={handleChange}
+            className="form-control"
+            style={{ backgroundColor: "#000", color: "#fff" }}
+          />
+          {errors.email && <p className="error">{errors.email}</p>}
+        </div>
 
-          {/* Nombre */}
-          <div className="mb-3">
-            <label>Nombre</label>
-            <input
-              type="text"
-              name="name"
-              value={values.name}
-              onChange={onChange}
-              className="form-control"
-              style={{
-                backgroundColor: "#000",
-                color: "var(--text-light)",
-                border: "1px solid var(--blue-electric)",
-              }}
-            />
-            {errors.name && <p className="error">{errors.name}</p>}
-          </div>
+        {/* PASSWORD */}
+        <div className="mb-3">
+          <label>Contraseña</label>
+          <input
+            type="password"
+            name="password"
+            value={values.password}
+            onChange={handleChange}
+            className="form-control"
+            style={{ backgroundColor: "#000", color: "#fff" }}
+          />
+          {errors.password && <p className="error">{errors.password}</p>}
+        </div>
 
-          {/* Email */}
-          <div className="mb-3">
-            <label>Correo</label>
-            <input
-              type="email"
-              name="email"
-              value={values.email}
-              onChange={onChange}
-              className="form-control"
-              style={{
-                backgroundColor: "#000",
-                color: "var(--text-light)",
-                border: "1px solid var(--blue-electric)",
-              }}
-            />
-            {errors.email && <p className="error">{errors.email}</p>}
-          </div>
-
-          {/* Contraseña */}
-          <div className="mb-3">
-            <label>Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              value={values.password}
-              onChange={onChange}
-              className="form-control"
-              style={{
-                backgroundColor: "#000",
-                color: "var(--text-light)",
-                border: "1px solid var(--blue-electric)",
-              }}
-            />
-            {errors.password && <p className="error">{errors.password}</p>}
-          </div>
-
-          {/* Confirmar contraseña */}
-          <div className="mb-3">
-            <label>Confirmar contraseña</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={values.confirmPassword}
-              onChange={onChange}
-              className="form-control"
-              style={{
-                backgroundColor: "#000",
-                color: "var(--text-light)",
-                border: "1px solid var(--blue-electric)",
-              }}
-            />
-            {errors.confirmPassword && (
-              <p className="error">{errors.confirmPassword}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-electric w-100 mt-3"
-            style={{ padding: "10px", fontWeight: "bold" }}
-          >
-            Registrarse
-          </button>
-        </form>
-      </div>
+        {/* BOTÓN */}
+        <button type="submit" className="btn btn-electric w-100 mt-3">
+          Registrarse
+        </button>
+      </form>
     </div>
   );
 }

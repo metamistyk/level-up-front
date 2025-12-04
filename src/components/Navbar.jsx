@@ -1,10 +1,12 @@
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React from "react";
+import { NavLink, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar({ searchQuery, onSearch }) {
+  const { isAuthenticated, user, logout, isAdmin } = useAuth();
 
   const handleChange = (e) => {
-    onSearch(e.target.value);
+    if (onSearch) onSearch(e.target.value);
   };
 
   return (
@@ -13,11 +15,10 @@ export default function Navbar({ searchQuery, onSearch }) {
       style={{
         backgroundColor: "var(--dark-bg)",
         borderBottom: "2px solid var(--blue-electric)",
-        boxShadow: "0 0 12px rgba(0, 168, 255, 0.4)"
+        boxShadow: "0 0 12px rgba(0, 168, 255, 0.4)",
       }}
     >
       <div className="container-fluid">
-
         {/* LOGO */}
         <Link className="navbar-brand d-flex align-items-center text-light" to="/">
           <img
@@ -28,10 +29,9 @@ export default function Navbar({ searchQuery, onSearch }) {
             className="me-2"
             style={{
               filter: "drop-shadow(0 0 6px #00bfff)",
-              borderRadius: "8px"
+              borderRadius: "8px",
             }}
           />
-          
         </Link>
 
         {/* BOTÓN RESPONSIVE */}
@@ -47,28 +47,46 @@ export default function Navbar({ searchQuery, onSearch }) {
 
         {/* CONTENIDO */}
         <div className="collapse navbar-collapse" id="navbarNav">
-
           {/* LINKS IZQUIERDA */}
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <NavLink to="/" className="nav-link navlink-gamer">Inicio</NavLink>
+              <NavLink to="/" className="nav-link navlink-gamer">
+                Inicio
+              </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink to="/products" className="nav-link navlink-gamer">Productos</NavLink>
+              <NavLink to="/products" className="nav-link navlink-gamer">
+                Productos
+              </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink to="/about" className="nav-link navlink-gamer">Nosotros</NavLink>
+              <NavLink to="/about" className="nav-link navlink-gamer">
+                Nosotros
+              </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink to="/contact" className="nav-link navlink-gamer">Contacto</NavLink>
+              <NavLink to="/contact" className="nav-link navlink-gamer">
+                Contacto
+              </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink to="/blogs" className="nav-link navlink-gamer">Blog</NavLink>
+              <NavLink to="/blogs" className="nav-link navlink-gamer">
+                Blog
+              </NavLink>
             </li>
+
+            {/* ADMIN SOLO SI es ADMIN */}
+            {isAdmin && (
+              <li className="nav-item">
+                <NavLink to="/home-admin" className="nav-link navlink-gamer">
+                  Admin
+                </NavLink>
+              </li>
+            )}
           </ul>
 
           {/* BUSCADOR */}
@@ -82,14 +100,13 @@ export default function Navbar({ searchQuery, onSearch }) {
                 backgroundColor: "#000",
                 color: "var(--text-light)",
                 border: "1px solid var(--blue-electric)",
-                boxShadow: "0 0 8px rgba(0,168,255,0.3)"
+                boxShadow: "0 0 8px rgba(0,168,255,0.3)",
               }}
             />
           </form>
 
           {/* ICONOS DERECHA */}
           <ul className="navbar-nav d-flex align-items-center">
-
             {/* CARRITO */}
             <li className="nav-item me-2">
               <NavLink to="/cart" className="btn btn-electric">
@@ -97,26 +114,46 @@ export default function Navbar({ searchQuery, onSearch }) {
               </NavLink>
             </li>
 
-            {/* LOGIN */}
-            <li className="nav-item me-2">
-              <NavLink to="/login" className="btn btn-electric">
-                Login
-              </NavLink>
-            </li>
+            {/* CUANDO NO ESTÁ LOGUEADO */}
+            {!isAuthenticated ? (
+              <>
+                <li className="nav-item me-2">
+                  <NavLink to="/login" className="btn btn-electric">
+                    Login
+                  </NavLink>
+                </li>
 
-            {/* REGISTRO */}
-            <li className="nav-item">
-              <NavLink to="/signUp" className="btn btn-electric">
-                Registrarse
-              </NavLink>
-            </li>
+                <li className="nav-item">
+                  <NavLink to="/signUp" className="btn btn-electric">
+                    Registrarse
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              <>
+                {/* NOMBRE DEL USUARIO */}
+                <li className="nav-item me-3">
+                  <span
+                    className="nav-link"
+                    style={{ color: "var(--blue-electric)", fontWeight: "bold" }}
+                  >
+                    {user?.username}
+                  </span>
+                </li>
 
+                {/* LOGOUT */}
+                <li className="nav-item">
+                  <button className="btn btn-electric" onClick={logout}>
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
-
         </div>
       </div>
 
-      {/* ESTILO INTERNO NAVLINKS */}
+      {/* ESTILO INTERNO */}
       <style>{`
         .navlink-gamer {
           color: var(--text-light) !important;

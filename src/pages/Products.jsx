@@ -4,7 +4,17 @@ import QuantitySelector from '../components/QuantitySelector';
 
 export default function Products({ searchQuery }) {
   const [productos, setProductos] = useState([]);
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  // Manejo SEGURO del usuario
+  let user = null;
+  try {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser && storedUser !== "undefined") {
+      user = JSON.parse(storedUser);
+    }
+  } catch {
+    user = null;
+  }
 
   const query = (searchQuery || "").toLowerCase();
 
@@ -39,7 +49,6 @@ export default function Products({ searchQuery }) {
       if (!response.ok) throw new Error();
 
       alert(`Agregaste ${cantidad} unidad(es) de ${producto.name}.`);
-
     } catch (error) {
       alert("Error al agregar al carrito");
     }
@@ -81,7 +90,11 @@ export default function Products({ searchQuery }) {
                 <div className="card-body custom-card-body">
 
                   {/* SOLO EL TÍTULO ES CLICKEABLE */}
-                  <Link to={`/products/${producto.id}`} className="text-light" style={{ textDecoration: "none" }}>
+                  <Link
+                    to={`/products/${producto.id}`}
+                    className="text-light"
+                    style={{ textDecoration: "none" }}
+                  >
                     <h5 className="card-title">{producto.name}</h5>
                   </Link>
 
@@ -89,7 +102,7 @@ export default function Products({ searchQuery }) {
                     ${producto.price.toLocaleString("es-CL")}
                   </p>
 
-                  {/* ✔ YA NO REDIRIGE AL DETALLE */}
+                  {/* AGREGAR AL CARRITO */}
                   <QuantitySelector
                     onAddToCart={(cantidad) =>
                       handleAddFromProducts(producto, cantidad)
