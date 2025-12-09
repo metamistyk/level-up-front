@@ -24,7 +24,7 @@ import LoginAdmin from './components/LoginAdmin.jsx';
 import SearchResults from './components/SearchResults.jsx';
 import ScrollTopButton from './components/ScrollTopButton.jsx';
 
-import AdminRoute from "./components/AdminRoute";
+import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,50 +41,64 @@ export default function App() {
       <Navbar searchQuery={searchQuery} onSearch={handleSearch} />
 
       <Routes>
+        {/* PÚBLICAS */}
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<Us />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/search" element={<SearchResults searchQuery={searchQuery} />} />
-
+        
+        {/* LOGIN / REGISTRO */}
         <Route path="/login" element={<Login />} />
         <Route path="/signUp" element={<SignUp />} />
+        <Route path="/login-admin" element={<LoginAdmin />} />
 
+        {/* BLOGS */}
         <Route path="/blog1" element={<Blog1 />} />
         <Route path="/blog2" element={<Blog2 />} />
+
+        {/* BUSCADOR */}
+        <Route path="/search" element={<SearchResults searchQuery={searchQuery} />} />
+
+        {/* RUTA PROTEGIDA (usuario autenticado) */}
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
 
         {/* ADMIN RUTAS PROTEGIDAS */}
         <Route
           path="/home-admin"
           element={
-            <AdminRoute>
+            <PrivateRoute role="ADMIN">
               <HomeAdmin />
-            </AdminRoute>
+            </PrivateRoute>
           }
         />
 
         <Route
           path="/product-admin"
           element={
-            <AdminRoute>
+            <PrivateRoute role="ADMIN">
               <ProductsAdmin />
-            </AdminRoute>
+            </PrivateRoute>
           }
         />
 
         <Route
           path="/user-admin"
           element={
-            <AdminRoute>
+            <PrivateRoute role="ADMIN">
               <UserAdmin />
-            </AdminRoute>
+            </PrivateRoute>
           }
         />
 
-        <Route path="/login-admin" element={<LoginAdmin />} />
       </Routes>
 
       <Footer />

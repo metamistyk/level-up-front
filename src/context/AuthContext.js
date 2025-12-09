@@ -4,46 +4,61 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
-  // Carga segura desde localStorage
+  // Carga segura desde localStorage al iniciar la app
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("user");
-      if (stored && stored !== "undefined") {
-        setUser(JSON.parse(stored));
+      const storedUser = localStorage.getItem("user");
+      const storedToken = localStorage.getItem("token");
+
+      if (storedUser && storedUser !== "undefined") {
+        setUser(JSON.parse(storedUser));
+      }
+
+      if (storedToken && storedToken !== "undefined") {
+        setToken(storedToken);
       }
     } catch (error) {
-      console.error("Error leyendo usuario:", error);
-      localStorage.removeItem("user");
+      console.error("Error al cargar datos de autenticación:", error);
+      setUser(null);
+      setToken(null);
     }
   }, []);
 
-  // LOGIN
+  // LOGIN usando JWT
   const login = async (email, password) => {
-    const response = await fetch("http://localhost:8080/api/auth/login", {
+    const response = await fetch("http://localhost:8080/api/auth/login-jwt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) throw new Error("Credenciales incorrectas");
+    if (!response.ok) {
+      throw new Error("Credenciales incorrectas");
+    }
 
     const data = await response.json();
+    // data = { token: "...", user: { id, username, email, role } }
 
-    // Guardar usuario para sesión
-    localStorage.setItem("user", JSON.stringify(data));
-    setUser(data);
+    // Guardar en localStorage
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("token", data.token);
 
-    return data;
+    // Guardar en estado
+    setUser(data.user);
+    setToken(data.token);
   };
 
   // LOGOUT
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
+    setToken(null);
   };
 
-  // ROLES
+  // ROLES / ESTADO
   const isAuthenticated = !!user;
   const isAdmin = user?.role === "ADMIN";
 
@@ -51,6 +66,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        token,
         isAuthenticated,
         isAdmin,
         login,
